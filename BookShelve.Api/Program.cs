@@ -3,6 +3,7 @@ using BookShelve.Api.Domain.Data;
 using BookShelve.Api.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,9 @@ builder.Services.AddIdentityCore<ApplicationUser>()
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
+builder.Host.UseSerilog((context, loggingConfig) => loggingConfig.WriteTo.Console().ReadFrom.Configuration(context.Configuration));
+
+
 
 
 var app = builder.Build();
@@ -36,7 +40,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseStaticFiles();
 app.UseAuthorization();
 
 app.MapControllers();

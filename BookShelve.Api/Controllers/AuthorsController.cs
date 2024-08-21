@@ -4,6 +4,7 @@ using BookShelve.Api.Domain.Data;
 using BookShelve.Api.Domain.Entities;
 using BookShelve.Api.Models.Author;
 using AutoMapper;
+using BookShelve.Api.Static;
 
 namespace BookShelve.Api.Controllers
 {
@@ -13,34 +14,55 @@ namespace BookShelve.Api.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly ILogger<AuthorsController> _logger;
 
-        public AuthorsController(ApplicationDbContext context, IMapper mapper)
+        public AuthorsController(ApplicationDbContext context, IMapper mapper, ILogger<AuthorsController> logger)
         {
             _context = context;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         // GET: api/Authors
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ReadAuthorDto>>> GetAuthors()
         {
-            var authors = await _context.Authors.ToListAsync();
-            var auhtorDtos = _mapper.Map<IEnumerable<ReadAuthorDto>>(authors);
-            return Ok(auhtorDtos);
+            try
+            {
+                var authors = await _context.Authors.ToListAsync();
+                var auhtorDtos = _mapper.Map<IEnumerable<ReadAuthorDto>>(authors);
+                _logger.LogInformation(Messages.SuccessMessage);
+                return Ok(auhtorDtos);
+                
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, $"Error Performing the {nameof(GetAuthors)} method");
+                return StatusCode(500, Messages.Error500Message);
+            }
         }
 
         // GET: api/Authors/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ReadAuthorDto>> GetAuthor(int id)
         {
-            var author = await _context.Authors.FindAsync(id);
-
-            if (author == null)
+            try
             {
-                return NotFound();
+                var author = await _context.Authors.FindAsync(id);
+
+                if (author == null)
+                {
+                    return NotFound();
+                }
+                var authorDto = _mapper.Map<ReadAuthorDto>(author);
+                _logger.LogInformation(Messages.SuccessMessage);
+                return Ok(authorDto);
             }
-            var authorDto = _mapper.Map<ReadAuthorDto>(author);
-            return Ok(authorDto);
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, $"Error Performing the {nameof(GetAuthor)} method");
+                return StatusCode(500, Messages.Error500Message);
+            }
         }
 
         // PUT: api/Authors/5
@@ -61,6 +83,7 @@ namespace BookShelve.Api.Controllers
             _mapper.Map(authorDto, author);
 
             _context.Entry(author).State = EntityState.Modified;
+            _logger.LogInformation(Messages.Success204Message);
 
             try
             {
@@ -70,11 +93,13 @@ namespace BookShelve.Api.Controllers
             {
                 if (!AuthorExists(id))
                 {
+
                     return NotFound();
+
                 }
                 else
                 {
-                    throw;
+                    return StatusCode(500, Messages.Error500Message);
                 }
             }
 
@@ -86,27 +111,43 @@ namespace BookShelve.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<CreateAuthorDto>> PostAuthor(CreateAuthorDto authorDto)
         {
-            var author = _mapper.Map<Author>(authorDto);
-            _context.Authors.Add(author);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var author = _mapper.Map<Author>(authorDto);
+                _context.Authors.Add(author);
+                _logger.LogInformation(Messages.Success201Message);
+                await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetAuthor), new { id = author.Id }, author);
+                return CreatedAtAction(nameof(GetAuthor), new { id = author.Id }, author);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, Messages.Error500Message);
+            }
         }
 
         // DELETE: api/Authors/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAuthor(int id)
         {
-            var author = await _context.Authors.FindAsync(id);
-            if (author == null)
+            try
             {
-                return NotFound();
+                var author = await _context.Authors.FindAsync(id);
+                if (author == null)
+                {
+                    return NotFound();
+                }
+
+                _context.Authors.Remove(author);
+                _logger.LogInformation(Messages.DeleteResourceMessage);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
             }
-
-            _context.Authors.Remove(author);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch(Exception ex)
+            {
+                return StatusCode(500, Messages.Error500Message);
+            }
         }
 
         private bool AuthorExists(int id)
