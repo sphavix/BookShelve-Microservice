@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using BookShelve.Api.Domain.Data;
 using BookShelve.Api.Domain.Entities;
+using BookShelve.Api.Models.Author;
+using AutoMapper;
 
 namespace BookShelve.Api.Controllers
 {
@@ -10,22 +12,26 @@ namespace BookShelve.Api.Controllers
     public class AuthorsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public AuthorsController(ApplicationDbContext context)
+        public AuthorsController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         // GET: api/Authors
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Author>>> GetAuthors()
+        public async Task<ActionResult<IEnumerable<ReadAuthorDto>>> GetAuthors()
         {
-            return await _context.Authors.ToListAsync();
+            var authors = await _context.Authors.ToListAsync();
+            var auhtorDtos = _mapper.Map<IEnumerable<ReadAuthorDto>>(authors);
+            return Ok(auhtorDtos);
         }
 
         // GET: api/Authors/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Author>> GetAuthor(int id)
+        public async Task<ActionResult<ReadAuthorDto>> GetAuthor(int id)
         {
             var author = await _context.Authors.FindAsync(id);
 
@@ -33,19 +39,26 @@ namespace BookShelve.Api.Controllers
             {
                 return NotFound();
             }
-
-            return author;
+            var authorDto = _mapper.Map<ReadAuthorDto>(author);
+            return Ok(authorDto);
         }
 
         // PUT: api/Authors/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAuthor(int id, Author author)
+        public async Task<IActionResult> PutAuthor(int id, UpdateAuthorDto authorDto)
         {
-            if (id != author.Id)
+            if (id != authorDto.Id)
             {
                 return BadRequest();
             }
+
+            var author = await _context.Authors.FindAsync(id);
+            if (author == null)
+            {
+                return NotFound();
+            }
+            // Map Dto to Entity ==> source to destination
+            _mapper.Map(authorDto, author);
 
             _context.Entry(author).State = EntityState.Modified;
 
@@ -71,12 +84,13 @@ namespace BookShelve.Api.Controllers
         // POST: api/Authors
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Author>> PostAuthor(Author author)
+        public async Task<ActionResult<CreateAuthorDto>> PostAuthor(CreateAuthorDto authorDto)
         {
+            var author = _mapper.Map<Author>(authorDto);
             _context.Authors.Add(author);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetAuthor", new { id = author.Id }, author);
+            return CreatedAtAction(nameof(GetAuthor), new { id = author.Id }, author);
         }
 
         // DELETE: api/Authors/5

@@ -1,3 +1,4 @@
+using BookShelve.Api.Configurations;
 using BookShelve.Api.Domain.Data;
 using BookShelve.Api.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -20,6 +21,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddIdentityCore<ApplicationUser>()
         .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 
 
