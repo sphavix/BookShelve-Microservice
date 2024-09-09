@@ -4,6 +4,7 @@ using BookShelve.Api.Domain.Data;
 using BookShelve.Api.Domain.Entities;
 using BookShelve.Api.Models.Book;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 namespace BookShelve.Api.Controllers
 {
@@ -24,16 +25,19 @@ namespace BookShelve.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ReadBookDto>>> GetBooks()
         {
-            var books = await _context.Books.Include(x => x.Author).ToListAsync();
-            var booksDto = _mapper.Map<IEnumerable<ReadBookDto>>(books);
-            return Ok(booksDto);
+            var books = await _context.Books.Include(x => x.Author)
+                        .ProjectTo<ReadBookDto>(_mapper.ConfigurationProvider)
+                        .ToListAsync();
+            return Ok(books);
         }
 
         // GET: api/Books/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Book>> GetBook(int id)
+        public async Task<ActionResult<BookDetailsDto>> GetBook(int id)
         {
-            var book = await _context.Books.FindAsync(id);
+            var book = await _context.Books.Include(b => b.Author)
+                                .ProjectTo<BookDetailsDto>(_mapper.ConfigurationProvider)
+                                .FirstOrDefaultAsync(x => x.Id == id);
 
             if (book == null)
             {
@@ -44,15 +48,22 @@ namespace BookShelve.Api.Controllers
         }
 
         // PUT: api/Books/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBook(int id, Book book)
+        public async Task<IActionResult> PutBook(int id, UpdateBookDto bookDto)
         {
-            if (id != book.Id)
+            if (id != bookDto.Id)
             {
                 return BadRequest();
             }
 
+            var book = await _context.Books.FindAsync(id);
+            if(book == null)
+            {
+                return NotFound();
+            }
+
+            // Map Dto to entity
+            _mapper.Map(bookDto, book);
             _context.Entry(book).State = EntityState.Modified;
 
             try
@@ -61,7 +72,7 @@ namespace BookShelve.Api.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!BookExists(id))
+                if (! await BookExists(id))
                 {
                     return NotFound();
                 }
@@ -75,14 +86,14 @@ namespace BookShelve.Api.Controllers
         }
 
         // POST: api/Books
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Book>> PostBook(Book book)
+        public async Task<ActionResult<CreateBookDto>> PostBook(CreateBookDto bookDto)
         {
+            var book = _mapper.Map<Book>(bookDto);
             _context.Books.Add(book);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetBook", new { id = book.Id }, book);
+            return CreatedAtAction(nameof(GetBook), new { id = book.Id }, book);
         }
 
         // DELETE: api/Books/5
@@ -101,9 +112,9 @@ namespace BookShelve.Api.Controllers
             return NoContent();
         }
 
-        private bool BookExists(int id)
+        private async Task<bool> BookExists(int id)
         {
-            return _context.Books.Any(e => e.Id == id);
+            return await _context.Books.AnyAsync(e => e.Id == id);
         }
     }
 }
