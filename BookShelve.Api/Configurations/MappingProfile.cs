@@ -14,8 +14,16 @@ namespace BookShelve.Api.Configurations
             CreateMap<CreateAuthorDto, Author>().ReverseMap();
 
             CreateMap<Book, ReadBookDto>()
+                .ForMember(b => b.AuthorName, src => src.MapFrom(m => $"{m.Author.FirstName} {m.Author.LastName}")) // Map from source to Dest, Conc the fields from entity to Dto
+                .ReverseMap();
+
+            CreateMap<Book, BookDetailsDto>()
                 .ForMember(b => b.AuthorName, src => src.MapFrom(m => $"{m.Author.FirstName} {m.Author.LastName}")) // Conc the fields from entity to Dto
                 .ReverseMap();
+            CreateMap<CreateBookDto, Book>().ReverseMap();
+            CreateMap<Book, UpdateBookDto>().ReverseMap();
+
+
         }
     }
 }
