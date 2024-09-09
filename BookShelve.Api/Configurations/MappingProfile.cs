@@ -2,6 +2,7 @@
 using BookShelve.Api.Domain.Entities;
 using BookShelve.Api.Models.Author;
 using BookShelve.Api.Models.Book;
+using BookShelve.Api.Models.User;
 
 namespace BookShelve.Api.Configurations
 {
@@ -22,6 +23,8 @@ namespace BookShelve.Api.Configurations
                 .ReverseMap();
             CreateMap<CreateBookDto, Book>().ReverseMap();
             CreateMap<Book, UpdateBookDto>().ReverseMap();
+
+            CreateMap<ApplicationUser, RegisterUserDto>().ReverseMap();
 
 
         }
