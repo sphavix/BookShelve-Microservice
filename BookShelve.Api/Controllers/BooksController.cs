@@ -5,11 +5,13 @@ using BookShelve.Api.Domain.Entities;
 using BookShelve.Api.Models.Book;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BookShelve.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+   
     public class BooksController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -49,6 +51,7 @@ namespace BookShelve.Api.Controllers
 
         // PUT: api/Books/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> PutBook(int id, UpdateBookDto bookDto)
         {
             if (id != bookDto.Id)
@@ -87,6 +90,7 @@ namespace BookShelve.Api.Controllers
 
         // POST: api/Books
         [HttpPost]
+        [Authorize(Roles = "Administrator")]
         public async Task<ActionResult<CreateBookDto>> PostBook(CreateBookDto bookDto)
         {
             var book = _mapper.Map<Book>(bookDto);

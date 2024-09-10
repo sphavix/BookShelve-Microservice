@@ -5,11 +5,13 @@ using BookShelve.Api.Domain.Entities;
 using BookShelve.Api.Models.Author;
 using AutoMapper;
 using BookShelve.Api.Static;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BookShelve.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
     public class AuthorsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -25,6 +27,7 @@ namespace BookShelve.Api.Controllers
 
         // GET: api/Authors
         [HttpGet]
+        [Authorize(Roles = "Administrator")]
         public async Task<ActionResult<IEnumerable<ReadAuthorDto>>> GetAuthors()
         {
             try
@@ -44,6 +47,7 @@ namespace BookShelve.Api.Controllers
 
         // GET: api/Authors/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "Administrator")]
         public async Task<ActionResult<ReadAuthorDto>> GetAuthor(int id)
         {
             try
@@ -67,6 +71,7 @@ namespace BookShelve.Api.Controllers
 
         // PUT: api/Authors/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> PutAuthor(int id, UpdateAuthorDto authorDto)
         {
             if (id != authorDto.Id)
@@ -109,6 +114,7 @@ namespace BookShelve.Api.Controllers
         // POST: api/Authors
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Roles = "Administrator")]
         public async Task<ActionResult<CreateAuthorDto>> PostAuthor(CreateAuthorDto authorDto)
         {
             try
@@ -128,6 +134,7 @@ namespace BookShelve.Api.Controllers
 
         // DELETE: api/Authors/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteAuthor(int id)
         {
             try
