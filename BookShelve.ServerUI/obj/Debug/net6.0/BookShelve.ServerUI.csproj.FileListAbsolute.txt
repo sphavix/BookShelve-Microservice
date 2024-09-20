@@ -33,3 +33,9 @@ H:\2024\SideProjects\BookShelveApp\BookShelve.ServerUI\obj\Debug\net6.0\refint\B
 H:\2024\SideProjects\BookShelveApp\BookShelve.ServerUI\obj\Debug\net6.0\BookShelve.ServerUI.pdb
 H:\2024\SideProjects\BookShelveApp\BookShelve.ServerUI\obj\Debug\net6.0\BookShelve.ServerUI.genruntimeconfig.cache
 H:\2024\SideProjects\BookShelveApp\BookShelve.ServerUI\obj\Debug\net6.0\ref\BookShelve.ServerUI.dll
+H:\2024\SideProjects\BookShelveApp\BookShelve.ServerUI\bin\Debug\net6.0\Blazored.LocalStorage.dll
+H:\2024\SideProjects\BookShelveApp\BookShelve.ServerUI\bin\Debug\net6.0\Microsoft.IdentityModel.Abstractions.dll
+H:\2024\SideProjects\BookShelveApp\BookShelve.ServerUI\bin\Debug\net6.0\Microsoft.IdentityModel.JsonWebTokens.dll
+H:\2024\SideProjects\BookShelveApp\BookShelve.ServerUI\bin\Debug\net6.0\Microsoft.IdentityModel.Logging.dll
+H:\2024\SideProjects\BookShelveApp\BookShelve.ServerUI\bin\Debug\net6.0\Microsoft.IdentityModel.Tokens.dll
+H:\2024\SideProjects\BookShelveApp\BookShelve.ServerUI\bin\Debug\net6.0\System.IdentityModel.Tokens.Jwt.dll

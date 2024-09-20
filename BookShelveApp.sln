@@ -5,7 +5,7 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookShelve.Api", "BookShelve.Api\BookShelve.Api.csproj", "{6CACBB8C-B47E-4E48-A370-043F18EA42CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookShelve.ServerUI", "BookShelve.ServerUI\BookShelve.ServerUI.csproj", "{CF7C9DD9-3545-4A90-ACD3-062D32C4C764}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookShelve.ServerUI", "BookShelve.ServerUI\BookShelve.ServerUI.csproj", "{CF7C9DD9-3545-4A90-ACD3-062D32C4C764}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
