@@ -34,5 +34,23 @@ namespace BookShelve.ServerUI.Services.Authors
 
             return response;
         }
+
+        public async Task<Response<int>> CreateAuthorAsync(CreateAuthorDto createAuthorDto)
+        {
+            Response<int> response = new();
+            try
+            {
+                await GetBearerTokeAsync();
+
+                await _client.AuthorsPOSTAsync(createAuthorDto);
+                
+            }
+            catch(ApiException exception)
+            {
+                response = ConvertApiExceptions<int>(exception);
+            }
+
+            return response;
+        }
     }
 }

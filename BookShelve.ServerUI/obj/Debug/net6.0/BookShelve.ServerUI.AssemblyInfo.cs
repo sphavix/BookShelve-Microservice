@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BookShelve.ServerUI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fc7999270a05444fcda0abd74b7b44b38e4f0236")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+aba4f501ac0acd1bd16bcbe02664a38e754d4fae")]
 [assembly: System.Reflection.AssemblyProductAttribute("BookShelve.ServerUI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BookShelve.ServerUI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

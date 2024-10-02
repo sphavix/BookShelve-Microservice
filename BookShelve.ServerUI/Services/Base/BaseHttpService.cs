@@ -16,7 +16,15 @@ namespace BookShelve.ServerUI.Services.Base
         // Convert API exceptions
         protected Response<Guid> ConvertApiExceptions<Guid>(ApiException apiException)
         {
-            if(apiException.StatusCode == 400)
+            if (apiException.StatusCode >= 200 && apiException.StatusCode <= 299)
+            {
+                return new Response<Guid>()
+                {
+                    Message = "Operation completed successuflly.",
+                    IsSuccess = true
+                };
+            }
+            if (apiException.StatusCode == 400)
             {
                 return new Response<Guid>()
                 {
